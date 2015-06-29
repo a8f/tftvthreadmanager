@@ -291,7 +291,6 @@ function populateAndShowBlockedPlayers() {
         $('#blockedPlayerList').text("You haven't silenced any players.");
     }
     for (var i = 0; i < blockedPlayers.length; i++) {
-        alert("listing " + blockedPlayers[i]);
         $('#blockedPlayerList').append('<p id = "' + hiddenThreads[i] + '"><a href = "http://www.teamfortress.tv/user/' + hiddenThreads[i] + '">http://www.teamfortress.tv/user/' + hiddenThreads[i] + '</a></p>');
     }
     $('#blockedPlayerList').slideDown();
