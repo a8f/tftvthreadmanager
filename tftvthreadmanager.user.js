@@ -19,26 +19,25 @@ $settingsButton.prependTo($('#user-menu'));
 
 if (/^(http)?s?:\/\/(www)?\.teamfortress\.tv\/threadhidersettings.*$/.test(currentPage)) {
     generateSettingsPage();
-} else if (/^(http)?s?:\/\/(www)?\.teamfortress\.tv\/user\/.*$/.test(currentPage)){
-      $('#filter-container').append('<a id = "block-player-btn" class = "btn page-btn depress" href = "javascript:void(0);">Silence User</a>');
+} else if (/^(http)?s?:\/\/(www)?\.teamfortress\.tv\/user\/.*$/.test(currentPage)) {
+    $('#filter-container').append('<a id = "block-player-btn" class = "btn page-btn depress" href = "javascript:void(0);">Silence User</a>');
     document.getElementById('block-player-btn').addEventListener("click", blockCurrentPagePlayer);
 
-} else if (/^(http)?s?:\/\/(www)?\.teamfortress\.tv\/threads.*$/.test(currentPage) || /^https?:\/\/(www)?\.teamfortress\.tv\/forum\/.*$/.test(currentPage)){
+} else if (/^(http)?s?:\/\/(www)?\.teamfortress\.tv\/threads.*$/.test(currentPage) || /^https?:\/\/(www)?\.teamfortress\.tv\/forum\/.*$/.test(currentPage)) {
     hideThreads();
     if (GM_getValue("showHideThreadButton", true)) {
         var $hideButton = $('<input type="button" id="threadHideButton" value = "Hide Thread" class = "btn left submit" style="margin-left: 3px;">');
         $hideButton.appendTo($('#filter-container'));
         document.getElementById('threadHideButton').addEventListener("click", promptHideThread);
     }
-} else if (/^(http)?s?:\/\/(www)?\.teamfortress\.tv\/thread\/.*$/.test(currentPage)){
+} else if (/^(http)?s?:\/\/(www)?\.teamfortress\.tv\/thread\/.*$/.test(currentPage)) {
     $('div.thread-frag-container.noselect').append('<span id = "hideCurrentThreadBtn" class = "btn noselect"></span>');
-    if (isHiddenThread(currentPage)){
+    if (isHiddenThread(currentPage)) {
         $('#hideCurrentThreadBtn').text('Unhide Thread');
-       document.getElementById('hideCurrentThreadBtn').addEventListener("click", unhideCurrentThread);
-    }
-    else{
-       $('#hideCurrentThreadBtn').text('Hide Thread');
-       document.getElementById('hideCurrentThreadBtn').addEventListener("click", hideCurrentThread);
+        document.getElementById('hideCurrentThreadBtn').addEventListener("click", unhideCurrentThread);
+    } else {
+        $('#hideCurrentThreadBtn').text('Hide Thread');
+        document.getElementById('hideCurrentThreadBtn').addEventListener("click", hideCurrentThread);
     }
 }
 
@@ -58,7 +57,7 @@ function generateSettingsPage() {
     });
     $('#settings-body').append('<p id = "generalSettingsHeading" style = "text-align: center;font-size: 130%;margin-bottom: 10px;"><u>General</u></p>');
     $('#settings-body').append('<form action=""><input id = "showHideThreadButton" type="checkbox"> Show "Hide Thread" button on thread listings<br></form>');
-    if (GM_getValue("showHideThreadButton", true)){
+    if (GM_getValue("showHideThreadButton", true)) {
         $('#showHideThreadButton').prop('checked', true);;
     }
     $('#settings-body').append('<p id = "deleteData" style = "font-size: 120%;margin-bottom: 10px;margin-top: 10px;"><b><a href = "javascript:void(0);" style = "color: red;">Delete All Data</a></b></p>');
@@ -104,6 +103,7 @@ function hideThreads() {
             for (var i = 0; i < blockedPlayers.length; i++) {
                 desc = $(this).find('.main').find('.description').text();
                 if (desc.indexOf(blockedPlayers[i]) >= 0) {
+                    alert("index " + desc.indexOf(blockedPlayers[i]));
                     $(this).hide();
                 }
             }
@@ -111,8 +111,8 @@ function hideThreads() {
     });
 }
 
-function toggleShowHideThreadBtn(){
-    GM_setValue("showHideThreadButton", ! GM_getValue("showHideThreadButton", true));
+function toggleShowHideThreadBtn() {
+    GM_setValue("showHideThreadButton", !GM_getValue("showHideThreadButton", true));
 }
 
 // Should only be called once generateSettingsPage has completed
@@ -187,7 +187,7 @@ function promptUnhideThread() {
 }
 
 // Doesn't check against silenced users
-function isHiddenThread(thread){
+function isHiddenThread(thread) {
     thread = thread.replace(/[^\/\d]/g, '');
     var threadNo = 0;
     var threadSplit = thread.split("/");
@@ -198,13 +198,13 @@ function isHiddenThread(thread){
         }
     }
     var hiddenThreads = eval(GM_getValue("hiddenThreads", "[]"));
-    if (hiddenThreads.indexOf(threadNo) > -1){
+    if (hiddenThreads.indexOf(threadNo) > -1) {
         return true;
     }
     return false;
 }
 
-function unhideCurrentThread(){
+function unhideCurrentThread() {
     var thread = String(window.location);
     thread = thread.replace(/[^\/\d]/g, '');
     var threadNo = 0;
@@ -221,7 +221,7 @@ function unhideCurrentThread(){
     $('#hideCurrentThreadBtn').text("Hide Thread");
 }
 
-function hideCurrentThread(){
+function hideCurrentThread() {
     var thread = String(window.location);
     thread = thread.replace(/[^\/\d]/g, '');
     var threadNo = 0;
@@ -306,10 +306,9 @@ function unpopulateAndHideBlockedPlayers() {
 
 function promptBlockPlayer() {
     var player = prompt("Enter a player to block");
-    if(player.indexOf("/") == -1){
+    if (player.indexOf("/") == -1) {
         blockPlayer(player);
-    }
-    else{
+    } else {
         var sPlayer = player.split("/");
         blockPlayers(sPlayer[sPlayer.length - 1]);
     }
@@ -358,11 +357,11 @@ function resetBlockedPlayersFromSettings() {
     }
 }
 
-function blockCurrentPagePlayer(){
-    blockPlayer($('profile-header').text());
+function blockCurrentPagePlayer() {
+    blockPlayer($('#profile-header').text().trim());
 }
 
-function removeDuplicates(array){
+function removeDuplicates(array) {
     var fixedArray = [];
     $.each(array, function(i, obj) {
         if ($.inArray(obj, fixedArray) == -1)
@@ -371,10 +370,10 @@ function removeDuplicates(array){
     return fixedArray;
 }
 
-function clearData(){
-    if (confirm("You are about to delete ALL data including ALL threads and silenced users. This cannot be undone. Continue?")){
+function clearData() {
+    if (confirm("You are about to delete ALL data including ALL threads and silenced users. This cannot be undone. Continue?")) {
         var values = GM_listValues();
-        for (var i = 0; i < values.length; i++){
+        for (var i = 0; i < values.length; i++) {
             GM_deleteValue(values[i]);
         }
     }
