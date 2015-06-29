@@ -103,7 +103,6 @@ function hideThreads() {
             for (var i = 0; i < blockedPlayers.length; i++) {
                 desc = $(this).find('.main').find('.description').text();
                 if (desc.indexOf(blockedPlayers[i]) >= 0) {
-                    alert("index " + desc.indexOf(blockedPlayers[i]));
                     $(this).hide();
                 }
             }
