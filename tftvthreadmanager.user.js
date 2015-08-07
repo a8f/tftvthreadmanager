@@ -3,7 +3,7 @@
 // @description Allows for hiding of threads on TFTV
 // @namespace   deetr
 // @include     /^(http)?s?:\/\/(www)?\.teamfortress\.tv.*$/
-// @version     2.0
+// @version     2.01
 // @grant       GM_setValue
 // @grant       GM_listValues
 // @grant       GM_getValue
@@ -30,7 +30,7 @@ if (/^(http)?s?:\/\/(www)?\.teamfortress\.tv\/threadhidersettings.*$/.test(curre
         $hideButton.appendTo($('#filter-container'));
         document.getElementById('threadHideButton').addEventListener("click", promptHideThread);
     }
-} else if (/^(http)?s?:\/\/(www)?\.teamfortress\.tv\/thread\/.*$/.test(currentPage)) {
+} else if (/^(http)?s?:\/\/(www)?\.teamfortress\.tv\/\d*\/.*$/.test(currentPage)) {
     $('div.thread-frag-container.noselect').append('<span id = "hideCurrentThreadBtn" class = "btn noselect"></span>');
     if (isHiddenThread(currentPage)) {
         $('#hideCurrentThreadBtn').text('Unhide Thread');
@@ -58,7 +58,7 @@ function generateSettingsPage() {
     $('#settings-body').append('<p id = "generalSettingsHeading" style = "text-align: center;font-size: 130%;margin-bottom: 10px;"><u>General</u></p>');
     $('#settings-body').append('<form action=""><input id = "showHideThreadButton" type="checkbox"> Show "Hide Thread" button on thread listings<br></form>');
     if (GM_getValue("showHideThreadButton", true)) {
-        $('#showHideThreadButton').prop('checked', true);;
+        $('#showHideThreadButton').prop('checked', true);
     }
     $('#settings-body').append('<p id = "deleteData" style = "font-size: 120%;margin-bottom: 10px;margin-top: 10px;"><b><a href = "javascript:void(0);" style = "color: red;">Delete All Data</a></b></p>');
     document.getElementById('deleteData').addEventListener('click', clearData);
@@ -185,7 +185,7 @@ function promptUnhideThread() {
     populateAndShowHiddenThreads();
 }
 
-// Doesn't check against silenced users
+// Only checks against hidden threads, not silenced users
 function isHiddenThread(thread) {
     thread = thread.replace(/[^\/\d]/g, '');
     var threadNo = 0;
