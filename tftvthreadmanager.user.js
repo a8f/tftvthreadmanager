@@ -3,7 +3,7 @@
 // @description Allows for hiding of threads on TFTV
 // @namespace   deetr
 // @include     /^(http)?s?:\/\/(www)?\.teamfortress\.tv.*$/
-// @version     2.01
+// @version     2.1
 // @grant       GM_setValue
 // @grant       GM_listValues
 // @grant       GM_getValue
@@ -204,26 +204,29 @@ function isHiddenThread(thread) {
 }
 
 function unhideCurrentThread() {
-    var thread = String(window.location);
-    thread = thread.replace(/[^\/\d]/g, '');
-    var threadNo = 0;
-    var threadSplit = thread.split("/");
-    for (var i = 0; i < threadSplit.length; i++) {
-        if (!threadSplit[i] == "") {
-            threadNo = parseInt(threadSplit[i]);
-            break;
-        }
-    }
-    removeHiddenThread(threadNo);
+	currentThread = getCurrentThread();
+	if (currentThread > -1)
+		removeHiddenThread(currentThread);
     document.getElementById('hideCurrentThreadBtn').addEventListener("click", hideCurrentThread);
     document.getElementById('hideCurrentThreadBtn').removeEventListener("click", unhideCurrentThread);
     $('#hideCurrentThreadBtn').text("Hide Thread");
 }
 
 function hideCurrentThread() {
-    var thread = String(window.location);
+	currentThread = getCurrentThread();
+	if (currentThread > -1)
+		addHiddenThread(currentThread);
+    document.getElementById('hideCurrentThreadBtn').removeEventListener("click", hideCurrentThread);
+    document.getElementById('hideCurrentThreadBtn').addEventListener("click", unhideCurrentThread);
+    $('#hideCurrentThreadBtn').text("Unhide Thread");
+}
+
+// Returns -1 for invalid thread
+function getCurrentThread() {
+	var thread = String(window.location);
+	thread = thread.split('?')[0];
     thread = thread.replace(/[^\/\d]/g, '');
-    var threadNo = 0;
+    var threadNo = -1;
     var threadSplit = thread.split("/");
     for (var i = 0; i < threadSplit.length; i++) {
         if (!threadSplit[i] == "") {
@@ -231,10 +234,7 @@ function hideCurrentThread() {
             break;
         }
     }
-    addHiddenThread(threadNo);
-    document.getElementById('hideCurrentThreadBtn').removeEventListener("click", hideCurrentThread);
-    document.getElementById('hideCurrentThreadBtn').addEventListener("click", unhideCurrentThread);
-    $('#hideCurrentThreadBtn').text("Unhide Thread");
+	return threadNo;
 }
 
 function addHiddenThread(threadNo) {
